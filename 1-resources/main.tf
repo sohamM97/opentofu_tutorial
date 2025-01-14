@@ -32,6 +32,14 @@ resource "local_file" "example_html_body" {
 
 
 resource "local_file" "other" {
+    # Here, depends_on is not strictly necessary since tofu itself understands
+    # that this resource depends on the local_file.main resource.
+    # Basically, tofu works according to the directed acyclic graph (DAG)
+    # which keeps track of the resources and their dependencies.
+    # This can be visualized by running "tofu graph | dot -Tpng > output.png"
+    # Here, tofu graph just outputs a DAG. For the rest, you need to install
+    # "graphviz" - here, it takes the DAG and outputs it as a png.
+    depends_on = [ local_file.main ]
     content = local_file.main.content
     filename = "${path.module}/other.txt"
 }
